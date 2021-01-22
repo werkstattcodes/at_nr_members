@@ -17,11 +17,24 @@ df_nr <- xml_nr %>%
            into=c("name", "fraction", "period", "state"), 
            remove=T)
 
-df_nr2 <- df_nr %>% 
+
+df_nr <- df_nr %>% 
   mutate(name=str_remove(name, "Name:"),
          fraction=str_remove(fraction, "Fraktion:"),
          period=str_remove(period, "Gesetzgebungsperioden:"),
-         state=str_remove(state, "Bundesland:")) 
+         state=str_remove(state, "Bundesland:")) %>% 
+  mutate(across(.cols=where(is.character), str_trim))
+head(df_nr2)
+
+df_nr <- df_nr %>% 
+  mutate(name_dupes=case_when(str_detect(name, "siehe") ~ str_remove(name, regex("siehe.*")),
+                              TRUE ~ name)) %>% 
+  mutate(name_only=str_remove(name_dupes, ",.*")) %>% 
+  mutate(name_family=str_extract(name_only, regex("^\\S*"))) %>% 
+  mutate(name_first=str_remove(name_only, name_family) %>% str_trim) %>% 
+  mutate(title=str_extract(name_dupes, regex("(?<=,).*$")) %>% str_trim) %>% 
+  select(name_raw=name, name_family, name_first, title, fraction, period, state)
+
 
 readr::write_excel_csv2(df_nr2, file=here::here("data", "at_nr_since_1918.csv"))
   
