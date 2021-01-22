@@ -24,7 +24,6 @@ df_nr <- df_nr %>%
          period=str_remove(period, "Gesetzgebungsperioden:"),
          state=str_remove(state, "Bundesland:")) %>% 
   mutate(across(.cols=where(is.character), str_trim))
-head(df_nr2)
 
 df_nr <- df_nr %>% 
   mutate(name_dupes=case_when(str_detect(name, "siehe") ~ str_remove(name, regex("siehe.*")),
@@ -38,4 +37,5 @@ df_nr <- df_nr %>%
 
 readr::write_excel_csv2(df_nr, file=here::here("data", "at_nr_since_1918.csv"))
   
-head(df)
+head(df_nr)
+
