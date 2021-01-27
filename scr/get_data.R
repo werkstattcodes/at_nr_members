@@ -35,7 +35,7 @@ df_nr <- df_nr %>%
   select(name_raw=name, name_family, name_first, title, fraction, period, state)
 
 
-readr::write_excel_csv2(df_nr, file=here::here("data", "at_nr_since_1918.csv"))
+readr::write_excel_csv(df_nr, file=here::here("data", "at_nr_since_1918.csv"))
   
 head(df_nr)
 
